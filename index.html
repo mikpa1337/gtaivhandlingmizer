@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikko Technologies Ltd Handling Worse-inator</title>
+    <style>
+        #drop_zone {
+            height: 100px;
+            border: 2px dashed #ffc;
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        html {
+            background-color: #252525;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .container {
+            background-color: #666666;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            min-height: 95vh;
+        }
+
+        .second-container {}
+
+        h1 {
+            text-align: center;
+        }
+
+        body {
+            margin: 0 auto;
+        }
+
+        #drop_zone {
+            margin-bottom: 30px;
+        }
+
+        .inputs {
+            margin-bottom: 30px;
+        }
+
+        #fileContent {
+            -webkit-line-clamp: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        br {
+            display: block;
+            margin: 20px 10px;
+            content: " ";
+        }
+
+        .what-to-bomb {
+            text-align: left !important;
+            margin: 0 auto;
+            max-width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="container">
+        <div class="second-container">
+            <h1>Handling Worse-inator</h1>
+
+            <div id="drop_zone">Drag & Drop handling.dat here</div>
+
+            <div class="inputs"> 
+                
+                <div class="what-to-bomb">
+                    
+                    <label for="range">Randomization Offset</label>
+                    <input type="range" id="range" min="0" max="250" step="1" oninput="updateSliderValue()">
+                    <span id="slider-value">50</span>
+                    <br>
+                    
+                    <input type="checkbox" id="driveForce" name="driveForce" checked />
+                    <label for="driveForce">Drive Force</label>
+                    <br>
+                    
+                    <input type="checkbox" id="traction" name="traction" checked />
+                    <label for="traction">Traction</label>
+                    <br>
+                    
+                    <input type="checkbox" id="brakeForce" name="brakeForce" checked />
+                    <label for="brakeForce">Brake Force</label>
+                    <br>
+                    
+                    <input type="checkbox" id="maxVelocity" name="maxVelocity" checked />
+                    <label for="maxVelocity">Max Velocity</label>
+                    <br>
+                    
+                    <input type="checkbox" id="drag" name="drag" checked />
+                    <label for="drag">Drag</label>
+                    
+                </div>
+            </div>
+                
+            <button onclick="applyRandomization()" style="font-size: 50px;">💥💣🧨 Randomize!</button>
+        </div>
+        <p id="fileContent"></p>
+    </div>
+    
+    <script type="text/javascript">
+        const dropZone = document.getElementById('drop_zone');
+
+        // Prevent default behavior for drag/drop
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.style.border = '2px solid #66afe9'; // Highlight on hover
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.border = '2px dashed #ccc'; // Reset on leave
+        });
+
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.style.border = '2px dashed #ccc';
+
+            const file = event.dataTransfer.files[0];
+            if (file && file.name === 'handling.dat') {
+                // Read the file as text
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const content = e.target.result;
+                    document.getElementById('fileContent').innerText = content;
+
+                    // Send the file content to Go for processing
+                    window.processFile(content);
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Please drop a valid handling.dat file.');
+            }
+        });
+
+        function applyRandomization() {
+            const offset = document.getElementById('range').value;
+
+            // Gather checkbox states
+            const options = {
+                driveforce: document.getElementById('driveForce').checked,
+                traction: document.getElementById('traction').checked,
+                brakeforce: document.getElementById('brakeForce').checked,
+                maxVelocity: document.getElementById('maxVelocity').checked,
+                drag: document.getElementById('drag').checked
+            };
+
+            window.applyBomb(offset, options);
+        }
+
+        function updateSliderValue() {
+            const slider = document.getElementById('range');
+            const sliderValue = document.getElementById('slider-value');
+            sliderValue.textContent = slider.value;
+        }
+    </script>
+</body>
+
+</html>
